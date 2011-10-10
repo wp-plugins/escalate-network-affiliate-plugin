@@ -1,7 +1,7 @@
 === Escalate Network Affiliate Plugin ===
 Contributors: oodletech
 Tags: Escalate, Escalate Network, Affiliate, Offer, Coupons, Affiliate Network
-Stable tag: trunk
+Stable tag: 1.0.0
 Requires at least: 3.0
 Tested up to: 3.2.1
 
