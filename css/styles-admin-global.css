@@ -1,0 +1,43 @@
+/* WordPress Over-Ride Styles */
+.escalate-network #message { display: none; }
+.escalate-network #message ul { color: #CC0000; padding: 5px 0 0 0; }
+.escalate-network #message ul li { list-style: disc inside;}
+.escalate-network .wrap { margin-bottom: 150px; }
+.escalate-network .postbox h3 { cursor: pointer; }
+
+/* Settings Page Styles */
+.escalate-network .settings_form { padding: 0 0 20px 0; }
+.escalate-network .settings_form label { display: block; font-weight: bold; padding: 0 0 3px 0; }
+
+/* Dashboard Widget */
+.escalate-dashboard-loading { 
+	height: 35px; background: url('../images/ajax-loader.gif') no-repeat center; text-align: center; 
+	font-size: 22px; line-height: 35px; text-indent: 190px; margin-left: -95px;
+}
+.escalate-dashboard { overflow: hidden; }
+.escalate-dashboard ul { float: left; width: 45%; }
+
+/* Post Meta Box */
+#escalate_meta_nav { overflow: hidden; padding: 0 0 10px 0; }
+	#escalate_meta_nav ul { float: right; overflow: hidden; }
+		#escalate_meta_nav ul li { float: left; padding: 0 10px 0 0; }
+		
+.escalate-meta-box-loading { 
+	height: 35px; background: url('../images/ajax-loader.gif') no-repeat center; text-align: center; 
+	font-size: 22px; line-height: 35px; text-indent: 190px; margin-left: -95px;
+}
+#escalate_meta_offers { display: none; margin: 0 -10px -10px -10px; overflow: auto; }
+	#escalate_meta_offers li { background: #F0F0F0; padding: 10px; margin: 0; }
+	#escalate_meta_offers li.alternate { background: #E8E8E8; }
+	#escalate_meta_offers .first-line { overflow: hidden; }
+		#escalate_meta_offers p.offer-name { float: left; font-size: 16px; }
+		#escalate_meta_offers p.offer-payout { float: right; font-size: 16px; }
+	#escalate_meta_offers .second-line { display: none; }
+	#escalate_meta_offers .offer-button { text-align: center; }
+#escalate_meta_offers .files { display: none; }
+#escalate_meta_offers .offer-error { display: none; border: 1px solid #CC0000; background: #FFEBE8; padding: 5px; }
+#escalate_meta_offers .hide-creatives { display: none; }
+#escalate_meta_offers .offer-copy-code-container { position: relative; }
+#escalate_meta_offers .hidden { display: none; }
+.metabox-holder h3 span { display: block; position: relative; width: 100%;  }
+.metabox-holder h3 span em { display: block; text-align: right; font-size: 83%; position: absolute; top: 0; right: 0; }
