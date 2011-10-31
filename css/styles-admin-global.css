@@ -19,7 +19,7 @@
 
 /* Post Meta Box */
 #escalate_meta_nav { overflow: hidden; padding: 0 0 10px 0; }
-	#escalate_meta_nav ul { float: right; overflow: hidden; }
+	#escalate_meta_nav ul { float: right; overflow: hidden; padding: 5px 0 0 0; }
 		#escalate_meta_nav ul li { float: left; padding: 0 10px 0 0; }
 		
 .escalate-meta-box-loading { 
@@ -39,5 +39,38 @@
 #escalate_meta_offers .hide-creatives { display: none; }
 #escalate_meta_offers .offer-copy-code-container { position: relative; }
 #escalate_meta_offers .hidden { display: none; }
+
+/*
 .metabox-holder h3 span { display: block; position: relative; width: 100%;  }
 .metabox-holder h3 span em { display: block; text-align: right; font-size: 83%; position: absolute; top: 0; right: 0; }
+*/
+
+#escalate_network_stats h3 { position: relative; }
+#escalate_network_stats h3 em, #escalate_network_meta_box h3 span em { 
+	display: block; text-align: right; font-size: 83%; position: absolute; top: 8px; right: 20px; 
+}
+
+/* Coupons.com Container */
+#escalate-coupons-com-container { display: none; }
+#poststuff .inside #escalate-coupons-com-container p#escalate-coupons-com-container-title { 
+	float: left; font-size: 14px; font-weight: bold; padding: 7px 0 0 0;
+}
+#escalate-coupons-com-links { margin: 0 -10px -10px -10px; overflow: auto; }
+	#escalate-coupons-com-links li { background: #F0F0F0; padding: 10px; margin: 0; }
+	#escalate-coupons-com-links li.alternate { background: #E8E8E8; }
+	
+.escalate-coupon-com-li { overflow: hidden; }
+	.escalate-coupon-com-li > div { float: left; }
+		.escalate-coupons-com-checkbox { padding: 30px 0 0 0; }
+		.escalate-coupons-com-image { padding: 0 10px; }
+			.escalate-coupons-com-image img { border: 1px solid #EEEEEE; }
+		.escalate-coupons-com-details { padding: 5px 0 0 0; }
+			.escalate-coupons-com-title a { text-decoration: none; font-size: 16px; }
+			.escalate-coupons-com-title a:hover { text-decoration: underline; }
+			#poststuff .inside p.escalate-coupons-com-source { font-weight: bold; font-size: 14px; }
+			#poststuff .inside #escalate-coupons-com-container p { padding: 0 0 8px 0; margin: 0; line-height: normal; }
+.escalate-coupons-button { padding: 20px 0 0 0; text-align: center; }
+
+/* Error Display Box */
+.escalate-insert-error { display: none; margin: 20px 0 0 0; border: 1px solid #CC0000; background: #FFEBE8; padding: 10px; font-style: italic; }
+.escalate-insert-success { display: none; margin: 20px 0 0 0; background: #FFFFE0; border: 1px solid #E6DB55; color: #333; padding: 10px; font-style: italic; }
