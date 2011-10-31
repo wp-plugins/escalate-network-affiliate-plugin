@@ -26,8 +26,23 @@ class escalate_network_install extends escalate_network {
 			'sort_offer_by' => 'newest',
 			'affiliate_id' => '',
 			'cache_frequency' => 30,
-			'affiliate_id' => '',
-            'last_cache' => 0
+            'last_cache' => 0,
+            'user_access' => '',
+            'stats_last_cache' => '',
+			'stats_data' => array(
+				'today' => array(
+					'clicks' => '',
+					'payout' => ''
+				),
+				'yesterday' => array(
+					'clicks' => '',
+					'payout' => ''
+				),
+				'month' => array(
+					'clicks' => '',
+					'payout' => ''
+				)
+			)
 		);
 		return $defaults;
 	}
@@ -58,7 +73,7 @@ class escalate_network_install extends escalate_network {
 		
 		// Create Offer Files Table
 		$wpdb->query(
-			"CREATE TABLE `escalate_offer_files` (
+			"CREATE TABLE IF NOT EXISTS `escalate_offer_files` (
 			`id` INT NOT NULL ,
 			`display` TEXT NOT NULL ,
 			`filename` TEXT NOT NULL ,
