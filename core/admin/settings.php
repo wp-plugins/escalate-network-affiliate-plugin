@@ -39,6 +39,22 @@
 						?>
 					</select>
 					<p>This allows you to determine if you want your orders be automatically sorted by newest or by name when they are being loaded.</p>
+				
+					<!-- Permission Settings -->
+					<label>Show Plugin Stats and Escalate Network Settings Page</label>
+					
+					<?php
+					$admin_users = get_users(array('role' => 'administrator'));
+					//var_dump($options);
+					foreach($admin_users as $admin_user):
+						$checked = '';
+						if(isset($options['user_access']) && !empty($options['user_access'])):
+							if(in_array($admin_user->ID, $options['user_access'])) $checked = ' checked="checked"';
+						endif;
+						echo '<input type="checkbox" name="settings[user_access][]" value="' . $admin_user->ID . '"' . $checked . ' /> ' . $admin_user->display_name . ' ';
+					endforeach;
+					?>
+					<p>Those that are checked will be able see the stats on the dashboard and this settings page. If no admins are checked, all admins will have access by default.</p>
 				</div>
 			</div>
 		</div>
@@ -50,7 +66,14 @@
 	<!-- Stats -->
 	<div id="poststuff">
 		<div class="stuffbox" id="escalate_network_stats">
-			<h3>Escalate Network Stats</h3>
+			<?php
+			if(!empty($this->options['stats_last_cache'])):
+				$last_cache = '<em>Last Updated ' . date("m/d/y @ h:i:s", $this->options['stats_last_cache']) . '</em>';
+			else:
+				$last_cache = '';
+			endif;
+			?>
+			<h3>Escalate Network Stats<?php echo $last_cache; ?></em></h3>
 			<div class="inside">
 				<div class="escalate-dashboard-loading">Loading Stats</div>
 			</div>

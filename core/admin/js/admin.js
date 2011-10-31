@@ -91,7 +91,7 @@ jQuery(function($) {
 		});
 	}
 /*######################################################################
-# POST META BOX
+# POST META BOX - ESCALATE OFFERS
 ######################################################################*/
 	if($('#escalate_network_meta_box').length){
 		// Toggle Details for Offer
@@ -256,8 +256,67 @@ jQuery(function($) {
 			}
 			return false;
 		});
-		
 	} // end if($('#escalate_network_meta_box').length)
+/*######################################################################
+# POST META BOX - COUPONS.COM LINKS
+######################################################################*/
+	if($('#escalate_network_meta_box').length){
+		// Coupons.com - Show Coupons.com Links
+		$(".escalate-coupons-com").live("click", function(){
+			$("#escalate-offers-container").hide();
+			$("#escalate-coupons-com-container").show();
+			return false;
+		});
+		
+		// Coupons.com - Select All Link
+		$(".escalate-coupons-com-select-all").live("click", function(){
+			$("#escalate-coupons-com-links input").prop("checked", true);
+			return false;
+		});
+		
+		// Coupons.com - Unelect All Link
+		$(".escalate-coupons-com-unselect-all").live("click", function(){
+			$("#escalate-coupons-com-links input").prop("checked", false);
+			return false;
+		});
+		
+		// Coupons.com - Go back to Escalate Offers
+		$(".escalate-go-back-to-offers").live("click", function(){
+			$("#escalate-coupons-com-container").hide();
+			$("#escalate-offers-container").show();
+			return false;
+		});
+		
+		// Coupons.com - Insert Into Post
+		$(".add-coupons-to-post").live("click", function(){
+			// Set Vars for Editor
+			var visualEditor = $('#content_ifr').contents().find('.wp-editor');
+			var htmlEditor = $('#editorcontainer textarea');
+			var selectedCoupons = $("#escalate-coupons-com-links input:checked");
+			
+			// Reset Notifications
+			$(".escalate-insert-error").text('').hide();
+			$(".escalate-insert-success").text('').hide();
+			
+			// If HTML Editor - Return Error
+			if(htmlEditor.is(':visible')) {
+				$(".escalate-insert-error").text('You must be on the visual editor before inserting the coupons. You are currently on the HTML editor.').show();
+			
+			// IF none were Selected
+			} else if(!selectedCoupons.length) {
+				$(".escalate-insert-error").text('You did not select any coupons to insert.').show();
+				
+			// Else Insert Into Editor
+			} else {
+				selectedCoupons.each(function(){
+					insertCode = '<div class="escalate-coupons-com-image-css-selector"><a target="_blank" href="' + $(this).parent().find("input[name='escalate-coupons-com-hidden-link']").val() + '"><img src="' + $(this).parent().find("input[name='escalate-coupons-com-hidden-image']").val() + '" alt="" /></a></div><div class="escalate-coupons-com-link-css-selector"><a href="' + $(this).parent().find("input[name='escalate-coupons-com-hidden-link']").val() + '" target="_blank">' + $(this).attr('title') + '</a></div>';
+					visualEditor.append(insertCode);
+				});
+				$(".escalate-insert-success").text('Your selected coupons have been inserted.').show();
+			}
+			return false;
+		});
+	}
 /*######################################################################
 # END
 ######################################################################*/
