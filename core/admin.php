@@ -31,7 +31,9 @@ class escalate_network_admin extends escalate_network {
 		switch($pagenow) {
 			// Load Dashboard Widget
 			case 'index.php':
-				$this->load_dashboard_widget();
+				if($this->authed_user()):
+					$this->load_dashboard_widget();
+				endif;
 			break;
 			
 			// Load Post Meta Box When Adding a Post
@@ -46,7 +48,9 @@ class escalate_network_admin extends escalate_network {
 		}
 		
 		// Admin Menu
-		add_action('admin_menu', array($this,'admin_menu'));
+		if($this->authed_user()):
+			add_action('admin_menu', array($this,'admin_menu'));
+		endif;
 		
 		// Load Admin Global CSS
 		$this->css_files();
@@ -61,6 +65,25 @@ class escalate_network_admin extends escalate_network {
 		$this->admin_ajax();
 	}
 	######################################################################
+	# CURRENT USER PERMISSIONS
+	######################################################################
+	function authed_user(){
+		// Grab Current User Info
+		global $current_user;
+		get_currentuserinfo();
+		
+		$authed = TRUE;
+		
+		if(isset($this->options['user_access'])):
+			if(!empty($this->options['user_access']) && !in_array($current_user->ID, $this->options['user_access'])):
+				$authed = FALSE;
+			endif;	
+		endif;
+		
+		// return Authed
+		return $authed;
+	}
+	######################################################################
 	# ESCALATE NETWORK DASHBOARD WIDGET
 	######################################################################
 	// Widget Display Markup
@@ -70,7 +93,12 @@ class escalate_network_admin extends escalate_network {
 	
 	// Create the function use in the action hook
 	function dashboard_widget() {
-		wp_add_dashboard_widget('escalate_network_stats', 'Escalate Network Stats', array($this,'dashboard_widget_display'));	
+		if(!empty($this->options['stats_last_cache'])):
+			$last_cache = '<em>Last Updated ' . date("m/d/y @ h:i:s", $this->options['stats_last_cache']) . '</em>';
+		else:
+			$last_cache = '';
+		endif;
+		wp_add_dashboard_widget('escalate_network_stats', 'Escalate Network Stats'.$last_cache, array($this,'dashboard_widget_display'));	
 	}
 	
 	// Load the Widget to Dashboard
@@ -95,18 +123,66 @@ class escalate_network_admin extends escalate_network {
     }
     
     function meta_box_content() {
-        echo 
-        '<span class="hidden escalate-sort-default">' . $this->options['sort_offer_by'] . '</span>
-        <div id="escalate_meta_nav">
-        	<input type="text" name="search_escalate" value="Search Offers" size="50" />
-			<button type="button" name="search-escalate-offers" class="button">Search</button>
-        	<ul>
-        		<li><a href="#" class="sort-escalate-offers-name">Sort by Name</a></li>
-        		<li><a href="#"class="sort-escalate-offers-newest">Sort by Newest</a></li>
-        	</ul>
-        </div>
-        <div class="escalate-meta-box-loading">Loading Offers</div>
-        <ul id="escalate_meta_offers" style="height: ' . $this->options['offer_widget_height'] . 'px"></ul>';
+    	// Used for Coupons.com Links
+    	require_once($this->plugin_basename . '/core/admin/inc/coupons-com-feed-class.php');
+    	$ccfc = new coupons_com_feed_class();
+    ?>
+        <div id="escalate-offers-container">
+	        <span class="hidden escalate-sort-default"><?php echo $this->options['sort_offer_by'] ?></span>
+	        <div id="escalate_meta_nav">
+	        	<input type="text" name="search_escalate" value="Search Offers" size="50" />
+				<button type="button" name="search-escalate-offers" class="button">Search</button>
+	        	<ul>
+	        		<li><a href="#" class="sort-escalate-offers-name">Sort by Name</a></li>
+	        		<li><a href="#" class="sort-escalate-offers-newest">Sort by Newest</a></li>
+	        		<li><a href="#" class="escalate-coupons-com">Coupons.com Links</a></li>
+	        	</ul>
+	        </div>
+	        <div class="escalate-meta-box-loading">Loading Offers</div>
+	        <ul id="escalate_meta_offers" style="height: <?php echo $this->options['offer_widget_height'] ?>px"></ul>
+		</div>
+		
+		<div id="escalate-coupons-com-container">
+			<div id="escalate_meta_nav">
+				<p id="escalate-coupons-com-container-title">Coupons.com Direct Link</p>
+	        	<ul>
+	        		<li><a href="#" class="escalate-coupons-com-select-all">Select All</a></li>
+	        		<li><a href="#" class="escalate-coupons-com-unselect-all">Unselect All</a></li>
+	        		<li><a href="#" class="escalate-go-back-to-offers">Go Back to Escalate Offers</a></li>
+	        	</ul>
+	        </div>
+			<ul id="escalate-coupons-com-links" style="height: <?php echo $this->options['offer_widget_height'] ?>px">
+				<?php foreach ($ccfc->items as $i => $item): ?>
+				<li <?= ($i % 2 == 0 ? '' : 'class="alternate"'); ?>>
+					<div class="escalate-coupon-com-li">
+						<div class="escalate-coupons-com-checkbox">
+							<input type="checkbox" name="escalate-coupons-com-checkbox" value="<?php echo $item['couponid']; ?>" title="<?php echo $item['description'];?>" />
+							<input type="hidden" name="escalate-coupons-com-hidden-image" value="<?php echo $item['image'];?>" />
+							<input type="hidden" name="escalate-coupons-com-hidden-link" value="<?php echo $item['link'];?>" />
+						</div>
+						<div class="escalate-coupons-com-image">
+							<img src="<?php echo $item['image'];?>" width="80" height="80" alt="" />
+						</div>
+						<div class="escalate-coupons-com-details">
+							<p class="escalate-coupons-com-title">
+								<a href="<?php echo $item['link'];?>" target="_blank"><?php echo $item['description'];?></a>
+							</p>
+							<p class="escalate-coupons-com-source"><?php echo $item['brand'];?></p>
+							<p class="escalate-coupons-com-field">
+								<input type="text" size="90" name="escalate-coupons-com-field" value="<?php echo $item['link'];?>" />
+							</p>
+						</div>
+					</div>
+				</li>
+				<?php endforeach;  ?>
+			</ul>
+			<div class="escalate-insert-error"></div>
+            <div class="escalate-insert-success"></div>
+			<div class="escalate-coupons-button">
+                <button class="add-coupons-to-post button" type="button" name="escalate-add-coupons-to-post">Insert Coupons</button>
+            </div>
+		</div>
+	<?php
     }
 	######################################################################
 	# UPGRADE PLUGIN
@@ -148,7 +224,7 @@ class escalate_network_admin extends escalate_network {
 			$access = $this->options['access_level'];
 		endif;
 		
-		// Create Menu Items
+		// Create Menu Items 
 		add_options_page('Escalate Network', 'Escalate Network', $access, 'escalate-network-options', array($this, 'settings_page'));
 	}
 	// Set What Page to Load for Menu Callback Function

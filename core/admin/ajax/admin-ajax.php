@@ -15,27 +15,53 @@ if(!empty($_POST) && $_POST['action'] == "escalate_network_admin" && is_admin())
 			# DASHBOARD WIDGET
 			######################################################################
 			case 'load_dashboard':
-				// Load API From Escalate Network
-				$xml_url = 'http://escalatenetwork.com/api/get-stats.php?email=' . decrypt($this->options['username'], EN_ENCRYPT_KEY) . '&password=' . decrypt($this->options['password'], EN_ENCRYPT_KEY);
-				$stats = simplexml_load_file($xml_url);
-				
-				// Set Money Format
-				setlocale(LC_MONETARY, 'en_US');
+				// Load API From Escalate Network if Not Cached
+				if(time() > strtotime('+30minute',$options['stats_last_cache'])):
+					$xml_url = 'http://escalatenetwork.com/api/get-stats.php?email=' . escalate_decrypt($options['username'], EN_ENCRYPT_KEY) . '&password=' . escalate_decrypt($options['password'], EN_ENCRYPT_KEY);
+					$stats_feed = simplexml_load_file($xml_url);
+					
+					if(!array_key_exists('error', $stats_feed)):
+						// Set Money Format
+						setlocale(LC_MONETARY, 'en_US');
+						
+						// Set Stat Option
+						$stats_data = array(
+							'today' => array(
+								'clicks' => (int)$stats_feed->today->clicks,
+								'payout' => money_format('%n', (float)$stats_feed->today->payout)
+							),
+							'yesterday' => array(
+								'clicks' => (int)$stats_feed->yesterday->clicks,
+								'payout' => money_format('%n', (float)$stats_feed->yesterday->payout)
+							),
+							'month' => array(
+								'clicks' => (int)$stats_feed->month->clicks,
+								'payout' => money_format('%n', (float)$stats_feed->month->payout)
+							)
+						);
+						
+						// Set Stats Cache Timestamp + Stats Data
+						$newopts = array('stats_last_cache' => time(), 'stats_data' => $stats_data);
+						$options = array_merge($options, $newopts);		
+						update_option('escalate_network', $options);
+					endif;
+				endif;
 				
 				// Display Stats Dashboard Widget if Authed
-				if(!$stats->error):
+				if((isset($stats_feed) && !array_key_exists('error', $stats_feed)) || !isset($stats_feed)):
 					$data['response'] = '<div class="escalate-dashboard">
 					<ul>
-						<li>Clicks Today: ' . $stats->today->clicks . '</li>
-						<li>Clicks Yesterday: ' . $stats->yesterday->clicks . '</li>
-						<li>Clicks This Month: ' . $stats->month->clicks . '</li>
+						<li>Clicks Today: ' . $options['stats_data']['today']['clicks'] . '</li>
+						<li>Clicks Yesterday: ' . $options['stats_data']['yesterday']['clicks'] . '</li>
+						<li>Clicks This Month: ' . $options['stats_data']['month']['clicks'] . '</li>
 					</ul>
 					<ul>
-						<li>Amount Today: ' . money_format('%n', (float)$stats->today->payout) . '</li>
-						<li>Amount Yesterday: ' . money_format('%n', (float)$stats->yesterday->payout) . '</li>
-						<li>Amount This Month: ' . money_format('%n', (float)$stats->month->payout) . '</li>
+						<li>Amount Today: ' . $options['stats_data']['today']['payout'] . '</li>
+						<li>Amount Yesterday: ' . $options['stats_data']['yesterday']['payout'] . '</li>
+						<li>Amount This Month: ' . $options['stats_data']['month']['payout'] . '</li>
 					</ul>
 					</div>';
+					$data['time'] = '<em>Last Updated ' . date("m/d/y @ h:i:s", time()) . '</em>';
 				// Else Load Auth Message
 				else:
 					$data['response'] = 'Either your Escalate Network login is incorrect or you have not yet filled in your settings. Please check the Escalate Network <a href="options-general.php?page=escalate-network-options">settings page</a>.';
@@ -52,7 +78,7 @@ if(!empty($_POST) && $_POST['action'] == "escalate_network_admin" && is_admin())
                     if(time() > strtotime('+30minute',$options['last_cache'])):
                     
 	                    // Load API From Escalate Network
-	                    $xml_url = 'http://escalatenetwork.com/api/get-offers.php?email=' . decrypt($this->options['username'], EN_ENCRYPT_KEY) . '&password=' . decrypt($this->options['password'], EN_ENCRYPT_KEY) . '&details=true&files=true';
+	                    $xml_url = 'http://escalatenetwork.com/api/get-offers.php?email=' . escalate_decrypt($options['username'], EN_ENCRYPT_KEY) . '&password=' . escalate_decrypt($options['password'], EN_ENCRYPT_KEY) . '&details=true&files=true';
 
 	                    // Possible spot for session conditional statement
 	                    $xml_data = simplexml_load_file($xml_url);
@@ -178,8 +204,8 @@ if(!empty($_POST) && $_POST['action'] == "escalate_network_admin" && is_admin())
 			case 'update_settings':
 				// Encrypt Username/Password Before Storing in DB
 				$encrypt_options = array(
-					'username' => encrypt($_POST['settings']['username'], EN_ENCRYPT_KEY),
-					'password' => encrypt($_POST['settings']['password'], EN_ENCRYPT_KEY)
+					'username' => escalate_encrypt($_POST['settings']['username'], EN_ENCRYPT_KEY),
+					'password' => escalate_encrypt($_POST['settings']['password'], EN_ENCRYPT_KEY)
 				);
 				
 				// Merge Encrypted Data with Post Data
