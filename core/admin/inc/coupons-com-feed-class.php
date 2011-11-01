@@ -104,7 +104,7 @@ class coupons_com_feed_class {
 				preg_match("#cid=(\d+)#i", $items[$i]['link'], $match);		
 		
 				$items[$i]['link'] = sprintf(
-					'http://enlnks.com/aff_c?offer_id=118&aff_id=%d&url_id=57&aff_sub5=%d%s', 
+					'http://strk.enlnks.com/aff_c?offer_id=118&aff_id=%d&url_id=57&aff_sub5=%d%s', 
 					$options['affiliate_id'], 
 					$match['1'],
 					$clean['extra_params']
@@ -118,7 +118,7 @@ class coupons_com_feed_class {
 		}
 		
 		unset($item, $i);
-		$this->items = $this->resortItems($items, 15);
+		$this->items = $this->resortItems($items, 30);
 		//echo '<pre>'; var_dump($items); echo '</pre>';
 	}
 }
