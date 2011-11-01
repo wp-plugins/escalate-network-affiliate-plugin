@@ -17,7 +17,7 @@ if(!empty($_POST) && $_POST['action'] == "escalate_network_admin" && is_admin())
 			case 'load_dashboard':
 				// Load API From Escalate Network if Not Cached
 				if(time() > strtotime('+30minute',$options['stats_last_cache'])):
-					$xml_url = 'http://escalatenetwork.com/api/get-stats.php?email=' . decrypt($options['username'], EN_ENCRYPT_KEY) . '&password=' . decrypt($options['password'], EN_ENCRYPT_KEY);
+					$xml_url = 'http://escalatenetwork.com/api/get-stats.php?email=' . escalate_decrypt($options['username'], EN_ENCRYPT_KEY) . '&password=' . escalate_decrypt($options['password'], EN_ENCRYPT_KEY);
 					$stats_feed = simplexml_load_file($xml_url);
 					
 					if(!array_key_exists('error', $stats_feed)):
@@ -78,7 +78,7 @@ if(!empty($_POST) && $_POST['action'] == "escalate_network_admin" && is_admin())
                     if(time() > strtotime('+30minute',$options['last_cache'])):
                     
 	                    // Load API From Escalate Network
-	                    $xml_url = 'http://escalatenetwork.com/api/get-offers.php?email=' . decrypt($options['username'], EN_ENCRYPT_KEY) . '&password=' . decrypt($options['password'], EN_ENCRYPT_KEY) . '&details=true&files=true';
+	                    $xml_url = 'http://escalatenetwork.com/api/get-offers.php?email=' . escalate_decrypt($options['username'], EN_ENCRYPT_KEY) . '&password=' . escalate_decrypt($options['password'], EN_ENCRYPT_KEY) . '&details=true&files=true';
 
 	                    // Possible spot for session conditional statement
 	                    $xml_data = simplexml_load_file($xml_url);
@@ -204,8 +204,8 @@ if(!empty($_POST) && $_POST['action'] == "escalate_network_admin" && is_admin())
 			case 'update_settings':
 				// Encrypt Username/Password Before Storing in DB
 				$encrypt_options = array(
-					'username' => encrypt($_POST['settings']['username'], EN_ENCRYPT_KEY),
-					'password' => encrypt($_POST['settings']['password'], EN_ENCRYPT_KEY)
+					'username' => escalate_encrypt($_POST['settings']['username'], EN_ENCRYPT_KEY),
+					'password' => escalate_encrypt($_POST['settings']['password'], EN_ENCRYPT_KEY)
 				);
 				
 				// Merge Encrypted Data with Post Data

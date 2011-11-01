@@ -4,7 +4,7 @@ Plugin Name: Escalate Network Affiliate Plugin
 Plugin URI: http://www.escalatenetwork.com
 Description: This Plugin Allows Affiliates of Escalate Network to access and post offers within WordPress. View a quick snapshot of your stats for today, yesterday, and month to date. No Need to login to the main system do it all from within your WordPress site.
 Author: Escalate Network
-Version: 1.0.2
+Version: 1.0.3
 Author URI: http://www.escalatenetwork.com
 */
 ######################################################################
@@ -14,8 +14,8 @@ class escalate_network {
 	######################################################################
 	# VARIABLES
 	######################################################################
-	var $version = '1.0.2';
-	var $db_version = '1.0.2';
+	var $version = '1.0.3';
+	var $db_version = '1.0.3';
 	var $pages = array('escalate-network-options');
 	var $plugin_url;
 	var $options;

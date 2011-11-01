@@ -13,12 +13,12 @@
 				<div class="inside">
 					<!-- Username -->
 					<label>Username</label>
-					<input type="text" value="<?php if($options['username']): echo decrypt($options['username'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[username]" />
+					<input type="text" value="<?php if($options['username']): echo escalate_decrypt($options['username'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[username]" />
 					<p>This is the username provided by Escalate Network</p>
 					
 					<!-- Password -->
 					<label>Password</label>
-					<input type="password" value="<?php if($options['password']): echo decrypt($options['password'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[password]" />
+					<input type="password" value="<?php if($options['password']): echo escalate_decrypt($options['password'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[password]" />
 					<p>This is the password provided by Escalate Network</p>
 					
 					<!-- Offer Widget Height -->
