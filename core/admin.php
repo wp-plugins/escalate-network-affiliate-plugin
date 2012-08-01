@@ -114,10 +114,10 @@ class escalate_network_admin extends escalate_network {
 	
 	function meta_box_hook() {
         global $wpdb;
-        if($this->options['last_cache']):
+        if($this->options['last_cache'] <> 0):
             $title = "Escalate Network Offers <em>Last Updated " . date("m/d/y @ h:i:s", $this->options['last_cache']) . "</em>";
         else:
-            $title = 'Escalate Network Offers <em></em>';
+            $title = 'Escalate Network Offers <em>Updating...</em>';
         endif;
         add_meta_box('escalate_network_meta_box',$title,array($this, 'meta_box_content' ),'post','normal','default', '');
     }
@@ -141,19 +141,60 @@ class escalate_network_admin extends escalate_network {
 	        <div class="escalate-meta-box-loading">Loading Offers</div>
 	        <ul id="escalate_meta_offers" style="height: <?php echo $this->options['offer_widget_height'] ?>px"></ul>
 		</div>
-		
+		<script type="text/javascript">
+			var wpurl = '<?php echo site_url(); ?>';
+		</script>
 		<div id="escalate-coupons-com-container">
 			<div id="escalate_meta_nav">
 				<p id="escalate-coupons-com-container-title">Coupons.com Direct Link</p>
-	        	<ul>
-	        		<li><a href="#" class="escalate-coupons-com-select-all">Select All</a></li>
-	        		<li><a href="#" class="escalate-coupons-com-unselect-all">Unselect All</a></li>
-	        		<li><a href="#" class="escalate-go-back-to-offers">Go Back to Escalate Offers</a></li>
-	        	</ul>
+				<ul class="escalate-coupons-com-sort">
+					<li style="display: none;">
+						Jump to:
+						<select id="jump_to_brand"><?php foreach ($ccfc->brands as $brand => $count ): 
+						$broken = explode(" ",$brand,4);
+						if ($broken[3]) array_pop($broken);
+						
+						$trimmed = implode(" ", $broken);
+						$trimmed .= " (".$count.")";
+						?>
+							<option value="<?php echo md5($brand);?>"><?php echo $trimmed;?></option><?php endforeach; ?>
+						</select>
+					</li>
+					<li style="display: none;">
+						Jump to:
+						<select id="jump_to_cat"><?php foreach ($ccfc->categories as $cat => $count ): 
+						$broken = explode(" ",$cat,4);
+						if ($broken[3]) array_pop($broken);
+						
+						$trimmed = implode(" ", $broken);
+						$trimmed .= " (".$count.")";
+						?>
+							<option value="<?php echo md5($cat);?>"><?php echo $trimmed;?></option><?php endforeach; ?>
+						</select>
+					</li>
+					<li>
+						Sort by
+					</li>
+					<li>
+						<select class="escalate-coupons-com-sort">
+							<option value="new">Newest First</option>
+							<option value="cat">Sort by Category</option>
+							<option value="old">Ending in 1 week</option>
+							<option value="brand">Brand</option>
+							<option value="value">Highest Value</option>
+						</select>
+					</li>
+					<li><a href="#" class="escalate-go-back-to-offers">Go Back to Escalate Offers</a></li>
+				</ul>
+				<div style="float: left; width: 140px; text-align: left; clear: both; ">
+					<input type="checkbox" name="escalate-coupons-com-toggle-all" value="toggle_all" title="Check / Uncheck All" /> Select / Deselect All
+				</div>
 	        </div>
 			<ul id="escalate-coupons-com-links" style="height: <?php echo $this->options['offer_widget_height'] ?>px">
-				<?php foreach ($ccfc->items as $i => $item): ?>
-				<li <?= ($i % 2 == 0 ? '' : 'class="alternate"'); ?>>
+				<?php 
+				foreach ($ccfc->items as $i => $item): 
+				?>
+				<li <?php echo ($i % 2 == 0 ? '' : 'class="alternate"'); ?>>
 					<div class="escalate-coupon-com-li">
 						<div class="escalate-coupons-com-checkbox">
 							<input type="checkbox" name="escalate-coupons-com-checkbox" value="<?php echo $item['couponid']; ?>" title="<?php echo $item['description'];?>" />
@@ -161,7 +202,7 @@ class escalate_network_admin extends escalate_network {
 							<input type="hidden" name="escalate-coupons-com-hidden-link" value="<?php echo $item['link'];?>" />
 						</div>
 						<div class="escalate-coupons-com-image">
-							<img src="<?php echo $item['image'];?>" width="80" height="80" alt="" />
+							<img src="<?php echo $item['image'];?>" width="263" height="128" alt="" />
 						</div>
 						<div class="escalate-coupons-com-details">
 							<p class="escalate-coupons-com-title">
@@ -169,7 +210,7 @@ class escalate_network_admin extends escalate_network {
 							</p>
 							<p class="escalate-coupons-com-source"><?php echo $item['brand'];?></p>
 							<p class="escalate-coupons-com-field">
-								<input type="text" size="90" name="escalate-coupons-com-field" value="<?php echo $item['link'];?>" />
+								<input type="text" size="50" name="escalate-coupons-com-field" value="<?php echo $item['link'];?>" />
 							</p>
 						</div>
 					</div>
@@ -179,7 +220,9 @@ class escalate_network_admin extends escalate_network {
 			<div class="escalate-insert-error"></div>
             <div class="escalate-insert-success"></div>
 			<div class="escalate-coupons-button">
-                <button class="add-coupons-to-post button" type="button" name="escalate-add-coupons-to-post">Insert Coupons</button>
+				<strong>Insert Coupon(s) </strong>
+                <button class="add-coupons-to-post button-primary" type="button" name="escalate-add-coupons-to-post">With Images</button>
+				<button class="add-coupons-to-post-text button-primary" type="button" name="escalate-add-coupons-to-post-text">With Text Only</button>
             </div>
 		</div>
 	<?php
@@ -237,3 +280,5 @@ class escalate_network_admin extends escalate_network {
 		add_action('wp_ajax_escalate_network_admin', array($this,'escalate_network_admin_ajax_callback'));
 	}
 }
+
+

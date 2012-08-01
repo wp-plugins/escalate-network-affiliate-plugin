@@ -1,10 +1,10 @@
 <?php
 // Originally Developed by Escalate Network, Turned into a Class by OodleTech
 class coupons_com_feed_class {
-	var $items; 
+	var $items, $brands, $categories; 
 	
-	function __construct(){
-		$this->items();
+	function __construct($method = 'new'){
+		$this->items($method);
 		$this->items;
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -13,24 +13,73 @@ class coupons_com_feed_class {
 		$dateLines = explode(" ", $dateLine);
 		list($month, $day, $year) = explode("/", $dateLines['0']); // 5/1/2011
 		list($hour, $mintues, $seconds) = explode(":", $dateLines['1']); // 1:39:00
-		return mktime(11, 59, 59, $month, $day, $year);
+		return mktime($hour, $mintues, $seconds, $month, $day, $year);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	function resortItems($array, $limit = false) {
-		foreach($array as $key => $val) {
-			$sorted[$val['activedatestamp'] + $key] = $val;
+	function resortItems($array, $method, $limit = false) {
+	
+		// Index the array as specified by $method
+
+		switch ($method)
+		{
+			case 'new':
+				foreach($array as $key => $val) {
+					$sorted[$val['activedatestamp']][$key] = $val;
+				}
+				krsort($sorted);
+			break;
+			case 'old':
+				foreach($array as $key => $val) {
+					if ($val['expiration_unix'] < (time() + 604800))
+					{
+						$sorted[$val['expiration_unix']][$key] = $val;
+					}
+				}
+				ksort($sorted);
+			break;
+			case 'cat':
+				foreach($array as $key => $val) {
+					$sorted[strtoupper($val['majorCategory'])][$key] = $val;
+				}
+				ksort($sorted);
+				$limit = false;
+			break;
+			case 'value':
+				foreach($array as $key => $val) {
+					$sorted[$val['value']][$key] = $val;
+				}
+				krsort($sorted);
+			break;
+			case 'brand':
+				foreach($array as $key => $val) {
+					$sorted[strtoupper($val['brand'])][$key] = $val;
+				}
+				ksort($sorted);
+				$limit = false;
+			break;
+			
 		}
-	
-		krsort($sorted);
-		
-		foreach($sorted as $item) {
-			$i++;
-			$items[] = $item;
-	
-			if ($limit and $limit == $i) {
-				break;
+		$limit = false;
+		// Nice lil' debug string for viewing how your sort logic worked :) 
+		//print_r(array_keys($sorted));
+		if ($sorted)
+		{
+			foreach ($sorted as $sortarray)
+			{
+				foreach($sortarray as $item) {
+					$i++;
+					$items[] = $item;
+					$this->categories[ucwords($item['majorCategory'])]++;
+					$this->brands[ucwords($item['brand'])]++;
+			
+					if ($limit and $limit == $i) {
+						break;
+					}
+				}
 			}
+			ksort($this->brands);
+			ksort($this->categories);
 		}
 		return $items;
 	}
@@ -91,34 +140,29 @@ class coupons_com_feed_class {
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////
-	function items() {
+	function items($method = 'new') {
 		$options = get_option('escalate_network');
 		$clean['extra_params'] = str_replace("%", "&amp;", $clean['extra_params']);	
-		$feedXml = "http://www.escalatenetwork.com/widget2/feeds.xml";
+		//$feedXml = "http://www.escalatenetwork.com/widget2/feeds.xml";
+		
+		$feedXml = "http://www.escalatenetwork.com/coupons/oodletech_external.xml?aff_id=".$options['affiliate_id'];
+		
 		if (is_object($results = simplexml_load_file($feedXml))) {
-			foreach ($results->item as $item) {
+			foreach ($results->channel->item as $item) {
 				$i++;
 				$items[$i] = (array) $item;
-		
-				// rewrite the links
-				preg_match("#cid=(\d+)#i", $items[$i]['link'], $match);		
-		
-				$items[$i]['link'] = sprintf(
-					'http://strk.enlnks.com/aff_c?offer_id=118&aff_id=%d&url_id=103&aff_sub5=%d%s', 
-					$options['affiliate_id'], 
-					$match['1'],
-					$clean['extra_params']
-				);
-				
-				$items[$i]['activedatestamp'] = $this->dateToTimeStamp($items[$i]['activedate']);
-				$items[$i]['description'] 	  = $this->UTF8ToEntities($items[$i]['description']);
+
+				$items[$i]['description'] 	  = $this->UTF8ToEntities($items[$i]['title']);
 				$items[$i]['brand'] 		  = $this->UTF8ToEntities($items[$i]['brand']);
+				
+				/* new with API 1.0.6 */
+				$items[$i]['expiration_unix'] = $this->dateToTimeStamp($items[$i]['expiration']);
+
 			}
 			
 		}
 		
 		unset($item, $i);
-		$this->items = $this->resortItems($items, 30);
-		//echo '<pre>'; var_dump($items); echo '</pre>';
+		$this->items = $this->resortItems($items, $method, false);
 	}
 }
