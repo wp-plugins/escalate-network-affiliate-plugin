@@ -9,6 +9,9 @@
 .escalate-network .settings_form { padding: 0 0 20px 0; }
 .escalate-network .settings_form label { display: block; font-weight: bold; padding: 0 0 3px 0; }
 
+.escalate-network .settings_form .okay { border-color: #70DF70; background-color: #BCEFBC; }
+.escalate-network .settings_form .error { border-color: #DF7070; background-color: #EF9090; }
+
 /* Dashboard Widget */
 .escalate-dashboard-loading { 
 	height: 35px; background: url('../images/ajax-loader.gif') no-repeat center; text-align: center; 
@@ -19,13 +22,14 @@
 
 /* Post Meta Box */
 #escalate_meta_nav { overflow: hidden; padding: 0 0 10px 0; }
-	#escalate_meta_nav ul { float: right; overflow: hidden; padding: 5px 0 0 0; }
+	#escalate_meta_nav ul { float: right; overflow: hidden; padding: 0; line-height: 24px; }
 		#escalate_meta_nav ul li { float: left; padding: 0 10px 0 0; }
 		
 .escalate-meta-box-loading { 
 	height: 35px; background: url('../images/ajax-loader.gif') no-repeat center; text-align: center; 
 	font-size: 22px; line-height: 35px; text-indent: 190px; margin-left: -95px;
 }
+
 #escalate_meta_offers { display: none; margin: 0 -10px -10px -10px; overflow: auto; }
 	#escalate_meta_offers li { background: #F0F0F0; padding: 10px; margin: 0; }
 	#escalate_meta_offers li.alternate { background: #E8E8E8; }
@@ -70,7 +74,19 @@
 			#poststuff .inside p.escalate-coupons-com-source { font-weight: bold; font-size: 14px; }
 			#poststuff .inside #escalate-coupons-com-container p { padding: 0 0 8px 0; margin: 0; line-height: normal; }
 .escalate-coupons-button { padding: 20px 0 0 0; text-align: center; }
+.escalate-coupons-com-sort { float: right; padding: 0; line-height: 24px; }
+
 
 /* Error Display Box */
 .escalate-insert-error { display: none; margin: 20px 0 0 0; border: 1px solid #CC0000; background: #FFEBE8; padding: 10px; font-style: italic; }
 .escalate-insert-success { display: none; margin: 20px 0 0 0; background: #FFFFE0; border: 1px solid #E6DB55; color: #333; padding: 10px; font-style: italic; }
+
+/* 1.0.6 - Notifications */
+/*.notification-wrap { position: relative; }
+.notification { padding: 5px; font-style: italic; position: absolute; left: 300px; top: -59px; height: 21px; }
+*/
+.height22 { height: 22px; }
+.notification { padding: 5px; font-style: italic; }
+.notification.loading {  border: 1px solid transparent;  background: url('../images/ajax-loader.gif') no-repeat; text-indent: 45px; height: 21px; }
+.notification.error { border: 1px solid #CC0000; background: #FFEBE8; font-style: italic; }
+.notification.success { background: #FFFFE0; border: 1px solid #E6DB55; color: #333; font-style: italic; }

@@ -7,7 +7,7 @@ class escalate_network_upgrade extends escalate_network {
 
 	function check_upgrade() {
 		// Version Specific Upgrades
-		if (version_compare($this->options['version'], '1.0.1', '<')) $this->upgrade('1.0.1');
+		if (version_compare($this->options['version'], '1.0.1', '<=')) $this->upgrade('1.0.1');
 		
 		// Upgrade to Current if There is Not a Version Specific Upgrade
 		if (version_compare($this->options['version'], $this->version, '<')) $this->upgrade('current');
@@ -25,7 +25,7 @@ class escalate_network_upgrade extends escalate_network {
 			update_option('escalate_network', $this->options);
 		endif;
 		######################################################################
-		# UPGRADE TO VERSION 1.0.1
+		# UPGRADE TO VERSION 1.0.6
 		######################################################################
 		if($ver == '1.0.1'):
 			// Run Queries
@@ -33,9 +33,7 @@ class escalate_network_upgrade extends escalate_network {
 			
 			// Update Options
 			$newopts = array(
-				'version' => '1.0.1',
-				'db_version' => '1.0.1',
-				'user_access' => '',
+				'version' => $this->version,
 				'stats_last_cache' => '',
 				'stats_data' => array(
 					'today' => array(

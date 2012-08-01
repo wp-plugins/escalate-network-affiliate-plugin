@@ -9,22 +9,41 @@
 		<!-- General Settings -->
 		<div id="poststuff">
 			<div class="stuffbox">
+				<h3>Escalate Network Information</h3>
+				<div class="inside">
+					
+					<div id="userpasslookup">
+						<!-- Username -->
+						<label>Username</label>
+						<input type="text" value="<?php if($options['username']): echo escalate_decrypt($options['username'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[username]" />
+						<p>This is the username provided by Escalate Network</p>
+						
+						<!-- Password -->
+						<label>Password</label>
+						<input type="password" value="<?php if($options['password']): echo escalate_decrypt($options['password'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[password]" />
+						<p>This is the password provided by Escalate Network</p>
+						<p>
+							<input id="userpassquery" type="submit" value="Submit" class="button">
+						</p>
+					</div>
+					<!-- Affiliate ID -->
+					<label>Current Plugin Status and Affiliate ID: 
+						<input type="text" value="<?php echo (!empty($options['affiliate_id'])) ? $options['affiliate_id']." Okay" : "Please Login"; ?>" class="<?php echo (!empty($options['affiliate_id'])) ? "okay" : "error"; ?>" size="8" readonly="readonly" name="affiliate_id" />
+					</label>
+					<div class="notification-wrap">
+						<div id="userpass" class="notification" style="display: none;"></div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="stuffbox">
 				<h3>General Settings</h3>
 				<div class="inside">
-					<!-- Username -->
-					<label>Username</label>
-					<input type="text" value="<?php if($options['username']): echo escalate_decrypt($options['username'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[username]" />
-					<p>This is the username provided by Escalate Network</p>
-					
-					<!-- Password -->
-					<label>Password</label>
-					<input type="password" value="<?php if($options['password']): echo escalate_decrypt($options['password'], EN_ENCRYPT_KEY); endif; ?>" size="50" name="settings[password]" />
-					<p>This is the password provided by Escalate Network</p>
 					
 					<!-- Offer Widget Height -->
-					<label>Offer Widget Height</label>
+					<label>Offer & Coupon Editor Height</label>
 					<input type="text" value="<?php if($options['offer_widget_height']): echo $options['offer_widget_height']; endif; ?>" size="5" name="settings[offer_widget_height]" /> px
-					<p>This setting is for the Escalate Network box that is displayed below the editor window on the post screen. Default is 310px. This field should only include the number.</p>
+					<p>This setting is for the Escalate Network box that is displayed below the post editor. Default is 310px. This field should only include the number.</p>
 				
 					<!-- Default Sort Order -->
 					<label>Sort Offers by Default</label>
@@ -58,7 +77,7 @@
 				</div>
 			</div>
 		</div>
-		<input type="submit" value="Save Settings" class="button" name="submit">
+		<input type="submit" value="Save Settings" class="button-primary" name="submit">
 		<br /><br />
 
 	</form>

@@ -18,7 +18,6 @@ class escalate_network_install extends escalate_network {
 	function defaults() {
 		$defaults = array(
 			'version' => $this->version,
-			'db_version' => $this->db_version,
 			'access_level' => 'edit_dashboard',
 			'username' => '',
 			'password' => '',
