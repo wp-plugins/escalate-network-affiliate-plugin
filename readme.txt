@@ -11,11 +11,11 @@ This Plugin Allows Affiliates of Escalate Network to access and post offers with
 
 Backend Features:
  
-* View a quick snapshot of your revenue for today, yesterday, and month to date 
-* View a quick snapshot of your clicks for today, yesterday, and month to date 
-* Easily browse your Escalate Network offers from the Post screen 
-* Seamlessly Add offer Links or Creatives to your Posts
-* Browse and insert coupons from Coupons.com with a robust interface
+* View a quick snapshot of your revenue for today, yesterday, and month to date. 
+* View a quick snapshot of your clicks for today, yesterday, and month to date. 
+* Easily browse your Escalate Network offers from the Post screen. 
+* Seamlessly Add offer Links or Creatives to your Posts.
+* Browse and insert coupons from Coupons.com with a robust interface.
 
 Front End Features:
 
